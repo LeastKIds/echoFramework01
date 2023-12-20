@@ -1,0 +1,41 @@
+version: "3"
+
+services:
+  go:
+    # build: 
+    #   context: .
+    #   dockerfile: Dockerfile
+    build: 
+      context: ./Dockerfile/golang/
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+      # - /home/leastkids/.cache/JetBrains/RemoteDev/dist:/home/leastkids/jetbrains
+    # ports:
+    #   - "1000:22"
+    ports:
+      - "8080:8080"
+    networks:
+      - our_net
+    container_name: golangTutorial01
+    environment:
+      POSTGRESQL_URL: 'postgres://echo:echo@postgresGolangTutorial01:5432/echo?sslmode=disable'
+    command: sleep infinity
+
+
+  postgres:
+    image: postgres:16.1-alpine3.18
+    volumes:
+      - ./DB/postgres:/var/lib/postgresql
+    environment:
+      POSTGRES_PASSWORD: echo
+      POSTGRES_USER: echo
+      POSTGRES_DB: echo
+    restart: always
+    networks:
+      - our_net
+    container_name: postgresGolangTutorial01
+
+networks:
+  our_net:
+    driver: bridge
